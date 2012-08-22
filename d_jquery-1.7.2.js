@@ -1,4 +1,4 @@
-/*!   李君--查看源码注释版
+/*!   D瓜哥(http://www.diguage.com/)--查看源码注释版。希望大家一起参与，共同提高。
  * jQuery JavaScript Library v1.7.2
  * http://jquery.com/
  *
