@@ -94,7 +94,7 @@ var jQuery = function( selector, context ) {
 	// [[Class]] -> type pairs
 	class2type = {};
 //#jQuery原型定义(包含核心方法) 。这是jQuery对象原型。为什么把原型重新赋值给jQuery.fn？
-jQuery.fn = jQuery.prototype = {
+jQuery.fn = jQuery.prototype = {  //#从这行可以看出，jQuery.fn就是jQuery对象的原形jQuery.prototype。322行 jQuery.fn.init.prototype = jQuery.fn;  则 jQuery.fn.init.prototype == jQuery.fn == jQuery.prototype
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
@@ -319,7 +319,7 @@ jQuery.fn = jQuery.prototype = {
 };
 
 // Give the init function the jQuery prototype for later instantiation
-jQuery.fn.init.prototype = jQuery.fn;  //#看上去很奇怪吧? 非常巧妙的设计，后面详细介绍。为什么“灰常巧妙”？
+jQuery.fn.init.prototype = jQuery.fn;  //#看上去很奇怪吧? 非常巧妙的设计，后面详细介绍。为什么“灰常巧妙”？  参考97行，jQuery.fn就是jQuery对象的原形，则jQuery.fn == jQuery.prototype == jQuery.fn.init.prototype
 //#提供jQuery静态方法与对象方法的扩展函数。扩展的原理是什么？
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
@@ -9403,4 +9403,8 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 //#原始代码行数是9404，发现行数有变化，马上使用Byond Compare进行比较。消除差异。否则，造成笔记中行数记录的不准确性。
 })( window );
 
-//# 在结构上非常的清晰，定义一个jQuery对象,对jQuery对象进行扩展,赋给window,变成全局变量。
+//#一下属于自己添加的注释
+//# 在结构上非常的清晰，
+//1、定义一个jQuery对象,
+//2、对jQuery对象进行扩展,
+//3、赋给window,变成全局变量。
