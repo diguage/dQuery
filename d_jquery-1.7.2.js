@@ -21,7 +21,7 @@ var document = window.document,
 	location = window.location;
 var jQuery = (function() {
 
-// Define a local copy of jQuery  //#这是构造jQuery对象，可以认为是jQuery的构造函数。通过var jQuery = function( selector, context ) {……}来定义jQuery对象，函数内部使用return new jQuery.fn.init( selector, context, rootjQuery );来获取jQuery对象。所以，jQuery对象可以认为是jQuery.fn.init的一个对象吗？
+// Define a local copy of jQuery  //#jQuery变量定义。这是构造jQuery对象，可以认为是jQuery的构造函数。通过var jQuery = function( selector, context ) {……}来定义jQuery对象，函数内部使用return new jQuery.fn.init( selector, context, rootjQuery );来获取jQuery对象。所以，jQuery对象可以认为是jQuery.fn.init的一个对象吗？
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
 		return new jQuery.fn.init( selector, context, rootjQuery );  //#这个函数是jQuery的总入口，jQuery对象实际上不是通过new jQuery()而是继承其prototype中的方法。jQuery对象实际是jQuery.fn.init函数生成的对象。从这里，我们也可以看出对于jQuery.prototype添加一些函数集的对象的意义不大。因为我们new jQuery()是可以的，但是生成的jQuery对象在return时会被抛弃。所以，不要使用new jQuery()来构建jQuery对象。
@@ -93,7 +93,7 @@ var jQuery = function( selector, context ) {
 
 	// [[Class]] -> type pairs
 	class2type = {};
-//#这是jQuery对象原型。为什么把原型重新赋值给jQuery.fn？
+//#jQuery原型定义(包含核心方法) 。这是jQuery对象原型。为什么把原型重新赋值给jQuery.fn？
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
@@ -319,8 +319,8 @@ jQuery.fn = jQuery.prototype = {
 };
 
 // Give the init function the jQuery prototype for later instantiation
-jQuery.fn.init.prototype = jQuery.fn;
-
+jQuery.fn.init.prototype = jQuery.fn;  //#看上去很奇怪吧? 非常巧妙的设计，后面详细介绍。为什么“灰常巧妙”？
+//#提供jQuery静态方法与对象方法的扩展函数。扩展的原理是什么？
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
@@ -384,7 +384,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	// Return the modified object
 	return target;
 };
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	noConflict: function( deep ) {
 		if ( window.$ === jQuery ) {
@@ -1214,7 +1214,7 @@ jQuery.Callbacks = function( flags ) {
 
 var // Static reference to slice
 	sliceDeferred = [].slice;
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 
 	Deferred: function( func ) {
@@ -1665,7 +1665,7 @@ jQuery.support = (function() {
 
 var rbrace = /^(?:\{.*\}|\[.*\])$/,
 	rmultiDash = /([A-Z])/g;
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	cache: {},
 
@@ -2050,7 +2050,7 @@ function handleQueueMarkDefer( elem, type, src ) {
 		}, 0 );
 	}
 }
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 
 	_mark: function( elem, type ) {
@@ -2427,7 +2427,7 @@ jQuery.fn.extend({
 		});
 	}
 });
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	valHooks: {
 		option: {
@@ -2902,7 +2902,7 @@ var rformElems = /^(?:textarea|input|select)$/i,
  * Helper functions for managing events -- not part of the public interface.
  * Props to Dean Edwards' addEvent library for many of the ideas.
  */
-jQuery.event = {
+jQuery.event = {  //#提供统一事件管理,jQuery内部使用,并不对外开放。研究研究都定义了哪些处理方法？
 
 	add: function( elem, types, handler, data, selector ) {
 
@@ -3509,7 +3509,7 @@ jQuery.removeEvent = document.removeEventListener ?
 			elem.detachEvent( "on" + type, handle );
 		}
 	};
-
+//#Event类似于Java的POJO类.传递事件的对象
 jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !(this instanceof jQuery.Event) ) {
@@ -3942,7 +3942,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
  *  Copyright 2011, The Dojo Foundation
  *  Released under the MIT, BSD, and GPL Licenses.
  *  More information: http://sizzlejs.com/
- */
+ */  //# Sizzle选择器框架，可以当成一个独立框架使用。
 (function(){
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
@@ -5628,7 +5628,7 @@ jQuery.each({
 		return this.pushStack( ret, name, slice.call( arguments ).join(",") );
 	};
 });
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	filter: function( expr, elems, not ) {
 		if ( not ) {
@@ -6306,7 +6306,7 @@ function shimCloneNode( elem ) {
 	div.innerHTML = elem.outerHTML;
 	return div.firstChild;
 }
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var srcElements,
@@ -6577,7 +6577,7 @@ jQuery.fn.css = function( name, value ) {
 			jQuery.css( elem, name );
 	}, name, value, arguments.length > 1 );
 };
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	// Add in style property hooks for overriding the default
 	// behavior of getting and setting a style property
@@ -7251,7 +7251,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 		});
 	};
 });
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 
 	getScript: function( url, callback ) {
@@ -7799,7 +7799,7 @@ function buildParams( prefix, obj, traditional, add ) {
 }
 
 // This is still on the jQuery object... for now
-// Want to move this to jQuery.ajax some day
+// Want to move this to jQuery.ajax some day//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 
 	// Counter for holding the number of active queries
@@ -8722,7 +8722,7 @@ jQuery.each({
 		return this.animate( props, speed, easing, callback );
 	};
 });
-
+//#对jQuery静态方法的扩展。为什么要对静态方法进行扩展，而不是直接放到“prototype定义的核心方法区”？在388、1218、1669、2054、2431、5632、6310、6581、7255、7803、8726十一处进行扩展。看看每个扩展都是什么作用？
 jQuery.extend({
 	speed: function( speed, easing, fn ) {
 		var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
@@ -9380,7 +9380,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 
 
-// Expose jQuery to the global object
+// Expose jQuery to the global object //将定义的jQuery定义为全局变量
 window.jQuery = window.$ = jQuery;
 
 // Expose jQuery as an AMD module, but only for AMD loaders that
@@ -9402,3 +9402,5 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 //#原始代码行数是9404，发现行数有变化，马上使用Byond Compare进行比较。消除差异。否则，造成笔记中行数记录的不准确性。
 })( window );
+
+//# 在结构上非常的清晰，定义一个jQuery对象,对jQuery对象进行扩展,赋给window,变成全局变量。
